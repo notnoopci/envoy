@@ -37,7 +37,9 @@ enum ResponseFlag {
   // Abort with error code was injected.
   FaultInjected = 0x400,
   // Request was ratelimited locally by rate limit filter.
-  RateLimited = 0x800
+  RateLimited = 0x800,
+  // ATTENTION: MAKE SURE THIS REMAINS EQUAL TO THE LAST FLAG.
+  LastFlag = RateLimited
 };
 
 /**
@@ -64,7 +66,7 @@ public:
 
   /**
    * @return duration from request start to when the entire request was received from the
-   * downstream client in microseconds. Note: if unset, will return 0 microseconds.
+   * downstream client in microseconds.
    */
   virtual const Optional<std::chrono::microseconds>& requestReceivedDuration() const PURE;
 
@@ -77,7 +79,7 @@ public:
 
   /**
    * @return the duration from request start to when the entire response was received from the
-   * upstream host in microseconds. Note: if unset, will return 0 microseconds.
+   * upstream host in microseconds.
    */
   virtual const Optional<std::chrono::microseconds>& responseReceivedDuration() const PURE;
 

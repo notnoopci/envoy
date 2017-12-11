@@ -14,6 +14,8 @@ namespace Envoy {
 namespace RequestInfo {
 
 TEST(ResponseFlagUtilsTest, toShortStringConversion) {
+  static_assert(ResponseFlag::LastFlag == 0x800, "A flag has been added. Fix this code.");
+
   std::vector<std::pair<ResponseFlag, std::string>> expected = {
       std::make_pair(ResponseFlag::FailedLocalHealthCheck, "LH"),
       std::make_pair(ResponseFlag::NoHealthyUpstream, "UH"),
