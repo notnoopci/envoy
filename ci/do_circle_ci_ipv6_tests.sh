@@ -20,5 +20,9 @@ echo "disk space at beginning of build:"
 df -h
 
 docker run -t -i -v "$ENVOY_BUILD_DIR":/build -v "$ENVOY_SRCDIR":/source \
+  --network host \
+  -e BAZEL_BUILD_EXTRA_OPTIONS="--spawn_strategy=remote \
+       --strategy=Javac=remote \
+        --genrule_strategy=remote \
+        --remote_rest_cache=http://localhost:7643" \
   envoyproxy/envoy-build:"$ENVOY_BUILD_SHA" /bin/bash -c "cd /source && ci/do_ci.sh $TEST_TYPE"
-
