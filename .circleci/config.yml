@@ -2,6 +2,12 @@ references:
   envoy-build-image: &envoy-build-image
     envoyproxy/envoy-build:52f6880ffbf761c9b809fc3ac208900956ff16b4
 
+  setup-bazel-remote-cache: &setup-bazel-remote-cache
+    run:
+      name: Spin up bazel remote cache
+      command: ~/bazel-remote-proxy -backend circleci://
+      background: true
+
 version: 2
 jobs:
    release:
@@ -11,6 +17,8 @@ jobs:
      working_directory: /source
      steps:
        - checkout
+       - run: ci/circleci_cache_setup.sh
+       - *setup-bazel-remote-cache
        - run: ci/do_circle_ci.sh bazel.release
        - setup_remote_docker
        - run: ci/docker_push.sh
@@ -22,6 +30,8 @@ jobs:
      working_directory: /source
      steps:
        - checkout
+       - run: ci/circleci_cache_setup.sh
+       - *setup-bazel-remote-cache
        - run: ci/do_circle_ci.sh bazel.asan
    tsan:
      docker:
@@ -30,6 +40,8 @@ jobs:
      working_directory: /source
      steps:
        - checkout
+       - run: ci/circleci_cache_setup.sh
+       - *setup-bazel-remote-cache
        - run: ci/do_circle_ci.sh bazel.tsan
    ipv6_tests:
      machine: true
@@ -55,6 +67,8 @@ jobs:
      working_directory: /source
      steps:
        - checkout
+       - run: ci/circleci_cache_setup.sh
+       - *setup-bazel-remote-cache
        - run: ci/do_circle_ci.sh bazel.coverage
        - run: ci/coverage_publish.sh
        - store_artifacts:
@@ -66,6 +80,8 @@ jobs:
      working_directory: /source
      steps:
        - checkout
+       - run: ci/circleci_cache_setup.sh
+       - *setup-bazel-remote-cache
        - run: ci/do_circle_ci.sh check_format
    build_image:
      docker:
@@ -85,6 +101,8 @@ jobs:
      working_directory: /source
      steps:
        - checkout
+       - run: ci/circleci_cache_setup.sh
+       - *setup-bazel-remote-cache
        - add_ssh_keys
        - run: ci/do_circle_ci.sh docs
    mac:
@@ -93,6 +111,8 @@ jobs:
      steps:
        - run: sudo ntpdate -vu time.apple.com
        - checkout
+       - run: ci/circleci_cache_setup.sh
+       - *setup-bazel-remote-cache
        - run: ci/mac_ci_setup.sh
        - run: ci/mac_ci_steps.sh
 

@@ -13,6 +13,12 @@ export ENVOY_SRCDIR="$(pwd)"
 # hard code this (basically due to how docker works).
 export NUM_CPUS=8
 
+# Use CircleCI experimental support for bazel cache
+export BAZEL_BUILD_EXTRA_OPTIONS="--spawn_strategy=remote \
+  --strategy=Javac=remote \
+  --genrule_strategy=remote \
+  --remote_rest_cache=http://localhost:7643"
+
 # Circle does not currently support IPv6 so we don't test it here. We will add and remove Travis
 # when it is supported.
 export BAZEL_EXTRA_TEST_OPTIONS="--test_env=ENVOY_IP_TEST_VERSIONS=v4only"
